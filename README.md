@@ -1,8 +1,13 @@
-# Tessera
+<p align="center">
+  <img src="docs/logo/logo-512.png" alt="Tessera" width="160" />
+</p>
 
-> A byte-level BPE tokenizer **library** in pure Kotlin.
->
-> *Tessera* — from Latin, a piece of mosaic. Each token is a tessera; together they form the mosaic of language.
+<h1 align="center">Tessera</h1>
+
+<p align="center">
+  A byte-level BPE tokenizer <strong>library</strong> in pure Kotlin.<br/>
+  <em>Tessera</em> — from Latin, a piece of mosaic. Each token is a tessera; together they form the mosaic of language.
+</p>
 
 ## Status
 

@@ -53,4 +53,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Root build config: Kotlin 2.1.0, JVM 21 toolchain
 - `tessera-core`: `maven-publish` + `java-library` + `explicitApi()` enforced
 - `.gitignore` for Gradle multi-module + Tessera-specific artifacts
-- `corpus/.gitkeep`, `gradle.properties` (`version=0.0.0`), initial `CHANGELOG.md`
+- `corpus/.gitkeep`, `gradle.properties` (`version=0.0.0-SNAPSHOT`), initial `CHANGELOG.md`
