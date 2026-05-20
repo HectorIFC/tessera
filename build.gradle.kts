@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "2.1.0" apply false
+    kotlin("jvm") version "2.3.21" apply false
     kotlin("plugin.serialization") version "2.1.0" apply false
     id("org.jetbrains.kotlinx.kover") version "0.8.3" apply false
     id("org.jlleitschuh.gradle.ktlint") version "12.1.2" apply false
