@@ -38,7 +38,7 @@ jobs:
 
       - name: Upload coverage report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-report
           path: tessera-core/build/reports/kover/html/
@@ -67,7 +67,7 @@ jobs:
 
       - name: Upload detekt report
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: detekt-report
           path: '**/build/reports/detekt/'
