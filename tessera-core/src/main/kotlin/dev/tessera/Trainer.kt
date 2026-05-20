@@ -5,20 +5,59 @@ import dev.tessera.internal.PreTokenizer
 
 /**
  * Trains a new [BpeTokenizer] from a text corpus.
+ *
+ * ### Algorithm
+ * 1. Pre-tokenize the corpus with the cl100k_base regex to produce independent chunks.
+ * 2. Convert each chunk to a sequence of unsigned byte IDs (0–255).
+ * 3. Separate chunks with a sentinel value (`-1`) so no merge ever crosses a chunk boundary.
+ * 4. Repeat [TrainingConfig.numMerges] times:
+ *    - Count all consecutive non-sentinel pairs.
+ *    - Select the most frequent pair; break ties by lowest (a, b) lexicographically.
+ *    - Assign it a new ID, replace every occurrence, and record the merge.
+ *
+ * ### Usage
+ * ```kotlin
+ * val tokenizer = Trainer(TrainingConfig(numMerges = 5000))
+ *     .trainFromFile("corpus/text.txt")
+ * tokenizer.save("tessera.json")
+ * ```
+ *
+ * @param config Training hyperparameters. Defaults to [TrainingConfig].
+ * @see TrainingConfig
+ * @see BpeTokenizer
  */
 public class Trainer(public val config: TrainingConfig = TrainingConfig()) {
 
-    /** Trains a tokenizer from a corpus string. */
+    /**
+     * Trains a tokenizer from a corpus string.
+     *
+     * @param corpus UTF-8 text used as the training corpus. Larger corpora produce better merges.
+     * @return A new [BpeTokenizer] with [TrainingConfig.numMerges] merge operations learned.
+     */
     public fun train(corpus: String): BpeTokenizer {
         val chunks = PreTokenizer.split(corpus)
         val ids = chunksToIds(chunks)
         return runBpe(ids)
     }
 
-    /** Trains a tokenizer from the file at [path]. */
+    /**
+     * Trains a tokenizer from the file at [path].
+     *
+     * The file is read as UTF-8.
+     *
+     * @param path Filesystem path to the corpus file.
+     * @return A new [BpeTokenizer].
+     */
     public fun trainFromFile(path: String): BpeTokenizer = trainFromFile(java.io.File(path))
 
-    /** Trains a tokenizer from [file]. */
+    /**
+     * Trains a tokenizer from [file].
+     *
+     * The file is read as UTF-8.
+     *
+     * @param file The corpus file.
+     * @return A new [BpeTokenizer].
+     */
     public fun trainFromFile(file: java.io.File): BpeTokenizer = train(file.readText(Charsets.UTF_8))
 
     // Converts pre-tokenized chunks into a flat ID list with -1 sentinels between chunks.

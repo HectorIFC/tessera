@@ -6,9 +6,9 @@
 
 ## Status
 
-🚧 **In development** — Phase 5 (Publication & polish)
+✅ **v1.0.0** — all phases complete.
 
-See [PRD.md](./PRD.md) for the full specification.
+See [ARCHITECTURE.md](./ARCHITECTURE.md) for internals, [BENCHMARKS.md](./BENCHMARKS.md) for test results, and [PRD.md](./PRD.md) for the full specification.
 
 ## About
 
@@ -122,7 +122,7 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) (created in Phase 5) for technical deta
 - [x] **Phase 2**: Sample apps consuming the library
 - [x] **Phase 3**: CLI consuming the library
 - [x] **Phase 4**: Validation against tiktoken, fuzz tests, coverage ≥ 80%
-- [ ] **Phase 5**: JitPack publication and polish
+- [x] **Phase 5**: JitPack publication, ARCHITECTURE.md, full KDoc, v1.0.0
 
 ## Sister project
 
