@@ -16,7 +16,7 @@ dependencyResolutionManagement {
 
 // build.gradle.kts
 dependencies {
-    implementation("com.github.HectorIFC:tessera:tessera-core-v1.0.0")
+    implementation("com.github.HectorIFC:tessera:tessera-core-v0.0.1")
 }
 ```
 
@@ -38,7 +38,7 @@ dependencyResolutionManagement {
 
 // build.gradle.kts
 dependencies {
-    implementation("dev.tessera:tessera-core:1.0.0")
+    implementation("dev.tessera:tessera-core:0.0.1")
 }
 ```
 

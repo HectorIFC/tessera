@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a78bfa"/>
+      <stop offset="100%" stop-color="#8b7cf6"/>
+    </linearGradient>
+    <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8b7cf6"/>
+      <stop offset="100%" stop-color="#6ee7b7"/>
+    </linearGradient>
+    <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6ee7b7"/>
+      <stop offset="100%" stop-color="#34d399"/>
+    </linearGradient>
+    <linearGradient id="grad4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+  </defs>
+  
+  <rect width="512" height="512" rx="96" ry="96" fill="#0f0a1f"/>
+  
+  <!-- 4 tesserae girando levemente, formando um quadrado maior -->
+  <g transform="translate(256, 256)">
+    <!-- Top-left -->
+    <rect x="-128" y="-128" width="112" height="112" rx="12" fill="url(#grad1)" transform="rotate(-3)"/>
+    <!-- Top-right -->
+    <rect x="16" y="-128" width="112" height="112" rx="12" fill="url(#grad2)" transform="rotate(3)"/>
+    <!-- Bottom-left -->
+    <rect x="-128" y="16" width="112" height="112" rx="12" fill="url(#grad4)" transform="rotate(3)"/>
+    <!-- Bottom-right -->
+    <rect x="16" y="16" width="112" height="112" rx="12" fill="url(#grad3)" transform="rotate(-3)"/>
+    
+    <!-- Tessera central, menor, sobreposta - representa a peça que "emerge" das demais -->
+    <rect x="-40" y="-40" width="80" height="80" rx="10" fill="#0f0a1f" stroke="url(#grad2)" stroke-width="4"/>
+  </g>
+</svg>

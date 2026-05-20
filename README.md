@@ -1,14 +1,19 @@
-# Tessera
+<p align="center">
+  <img src="docs/logo/logo-512.png" alt="Tessera" width="160" />
+</p>
 
-> A byte-level BPE tokenizer **library** in pure Kotlin.
->
-> *Tessera* — from Latin, a piece of mosaic. Each token is a tessera; together they form the mosaic of language.
+<h1 align="center">Tessera</h1>
+
+<p align="center">
+  A byte-level BPE tokenizer <strong>library</strong> in pure Kotlin.<br/>
+  <em>Tessera</em> — from Latin, a piece of mosaic. Each token is a tessera; together they form the mosaic of language.
+</p>
 
 ## Status
 
-✅ **v1.0.0** — all phases complete.
+✅ **v0.0.1** — all phases complete.
 
-See [ARCHITECTURE.md](./ARCHITECTURE.md) for internals, [BENCHMARKS.md](./BENCHMARKS.md) for test results, and [PRD.md](./PRD.md) for the full specification.
+See [ARCHITECTURE.md](./ARCHITECTURE.md) for internals and [BENCHMARKS.md](./BENCHMARKS.md) for test results.
 
 ## About
 
@@ -23,7 +28,7 @@ Tessera is a **Kotlin library** that implements a byte-level **Byte-Pair Encodin
 - **GPT-4 compatible approach** — pre-tokenization with `cl100k_base` regex
 - **Minimal public API** — only what is necessary, explicitly marked
 
-## Installation (after v1.0.0 release)
+## Installation (after v0.0.1 release)
 
 ### Gradle (Kotlin DSL)
 
@@ -37,7 +42,7 @@ dependencyResolutionManagement {
 
 // build.gradle.kts
 dependencies {
-    implementation("com.github.HectorIFC:tessera:tessera-core-v1.0.0")
+    implementation("com.github.HectorIFC:tessera:tessera-core-v0.0.1")
 }
 ```
 
@@ -116,13 +121,13 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) (created in Phase 5) for technical deta
 
 ## Roadmap
 
-- [x] Define scope and architecture (see PRD.md)
+- [x] Define scope and architecture
 - [x] **Phase 0**: Gradle multi-module setup
 - [x] **Phase 1**: Core library with round-trip guarantee and stable public API
 - [x] **Phase 2**: Sample apps consuming the library
 - [x] **Phase 3**: CLI consuming the library
 - [x] **Phase 4**: Validation against tiktoken, fuzz tests, coverage ≥ 80%
-- [x] **Phase 5**: JitPack publication, ARCHITECTURE.md, full KDoc, v1.0.0
+- [x] **Phase 5**: JitPack publication, ARCHITECTURE.md, full KDoc
 
 ## Sister project
 

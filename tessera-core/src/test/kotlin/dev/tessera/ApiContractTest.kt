@@ -6,7 +6,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 
 /**
- * Verifies that the public API is stable and usable as documented in the PRD.
+ * Verifies that the public API is stable and usable as documented.
  * Only touches public symbols — no internal classes.
  */
 class ApiContractTest : StringSpec({

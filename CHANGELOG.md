@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] — 2026-05-20
+## [v0.0.1] — 2026-05-20
 
 ### Added
 
@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ARCHITECTURE.md`: detailed explanation of byte-level BPE, pre-tokenization, training, encoding, decoding, persistence, and module structure
 - `tessera-core/README.md`: module-specific docs with dependency snippets (JitPack + GitHub Packages), full API reference, and local build instructions
 - Complete KDoc on all public API symbols (`BpeTokenizer`, `Trainer`, `TrainingConfig`, `TrainingProgress`, `SpecialTokens`) with `@param`, `@return`, `@throws`, and usage examples
-- `README.md` translated to English, roadmap and status updated to v1.0.0
+- `README.md` translated to English, roadmap and status updated
 - All documentation files translated to English (`BENCHMARKS.md`, `BOOTSTRAP.md`, `.gitignore`, PR template)
 
 #### Phase 4 — Validation & quality
@@ -53,4 +53,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Root build config: Kotlin 2.1.0, JVM 21 toolchain
 - `tessera-core`: `maven-publish` + `java-library` + `explicitApi()` enforced
 - `.gitignore` for Gradle multi-module + Tessera-specific artifacts
-- `corpus/.gitkeep`, `gradle.properties` (`version=1.0.0`), initial `CHANGELOG.md`
+- `corpus/.gitkeep`, `gradle.properties` (`version=0.0.0-SNAPSHOT`), initial `CHANGELOG.md`
