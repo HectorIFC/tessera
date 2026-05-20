@@ -38,7 +38,7 @@ dependencyResolutionManagement {
 
 // build.gradle.kts
 dependencies {
-    implementation("dev.tessera:tessera-core:v0.0.1")
+    implementation("dev.tessera:tessera-core:0.0.1")
 }
 ```
 

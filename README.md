@@ -8,7 +8,7 @@
 
 ✅ **v0.0.1** — all phases complete.
 
-See [ARCHITECTURE.md](./ARCHITECTURE.md) for internals, [BENCHMARKS.md](./BENCHMARKS.md) for test results, and [PRD.md](./PRD.md) for the full specification.
+See [ARCHITECTURE.md](./ARCHITECTURE.md) for internals and [BENCHMARKS.md](./BENCHMARKS.md) for test results.
 
 ## About
 
@@ -116,7 +116,7 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) (created in Phase 5) for technical deta
 
 ## Roadmap
 
-- [x] Define scope and architecture (see PRD.md)
+- [x] Define scope and architecture
 - [x] **Phase 0**: Gradle multi-module setup
 - [x] **Phase 1**: Core library with round-trip guarantee and stable public API
 - [x] **Phase 2**: Sample apps consuming the library

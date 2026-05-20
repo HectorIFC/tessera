@@ -3,6 +3,8 @@ name: Release
 on:
   push:
     branches: [main]
+    # Commits pushed back by this workflow use GITHUB_TOKEN, which does NOT
+    # re-trigger workflows — no infinite loop risk.
 
 permissions:
   contents: write
@@ -58,13 +60,42 @@ jobs:
           exit 0
 
       # The action is the single source of truth for the version.
-      # gradle.properties holds a 0.0.0-SNAPSHOT placeholder in the repo;
-      # the real version is injected here before every release build.
-      - name: Inject release version into gradle.properties
+      # All version references across the repo are updated atomically here
+      # and committed back to main before the tag is created, so the tagged
+      # commit always has fully up-to-date docs and coordinates.
+      - name: Update version in all files
         run: |
           VERSION="${{ steps.tag.outputs.new_version }}"
-          sed -i "s/^version=.*/version=${VERSION}/" gradle.properties
-          echo "gradle.properties set to version=${VERSION}"
+          TAG="${{ steps.tag.outputs.new_tag }}"
+
+          # Build configuration — version used by Gradle / Maven publish
+          sed -i -E "s/^version=.*/version=${VERSION}/" gradle.properties
+
+          # Landing page (docs/index.html) — hero badge, JitPack snippet, footer
+          sed -i -E "s/v[0-9]+\.[0-9]+\.[0-9]+/${TAG}/g" docs/index.html
+
+          # Root README — JitPack installation snippet
+          sed -i -E "s/tessera-core-v[0-9]+\.[0-9]+\.[0-9]+/tessera-core-${TAG}/g" README.md
+
+          # tessera-core README — JitPack snippet and GitHub Packages Maven coordinate
+          sed -i -E "s/tessera-core-v[0-9]+\.[0-9]+\.[0-9]+/tessera-core-${TAG}/g" tessera-core/README.md
+          sed -i -E "s/tessera-core:[0-9]+\.[0-9]+\.[0-9]+/tessera-core:${VERSION}/g" tessera-core/README.md
+
+          echo "All version references updated to ${TAG} / ${VERSION}"
+
+      - name: Commit version bump back to main
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add gradle.properties docs/index.html README.md tessera-core/README.md
+          # Only commit if something actually changed
+          if git diff --cached --quiet; then
+            echo "No file changes — skipping version bump commit."
+          else
+            git commit -m "chore: release ${{ steps.tag.outputs.new_tag }}"
+            git push origin main
+            echo "Version bump committed and pushed."
+          fi
 
       - name: Build & verify
         run: ./gradlew build koverVerify

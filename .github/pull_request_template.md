@@ -22,7 +22,7 @@
 // after
 ```
 
-> Breaking API changes require a major version bump (PRD §8.4).
+> Breaking API changes require a major version bump.
 
 ## Checklist
 

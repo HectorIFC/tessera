@@ -36,7 +36,7 @@ Validated via `RoundTripFuzzTest` and `RoundTripTest`.
 
 Measured with Kover on `tessera-core`.
 
-| Metric | Result | PRD §3.4 threshold |
+| Metric | Result | §3.4 threshold |
 |---|---|---|
 | Line coverage | **95%** | ≥ 80% ✅ |
 
@@ -53,7 +53,7 @@ tiktoken reference counts measured at [tiktokenizer.vercel.app](https://tiktoken
 | English | 2.69 | 1.14 | 2.36x |
 | Portuguese | 3.10 | 1.40 | 2.22x |
 
-**Note:** PRD §3.2 sets the ≤ 1.5x ratio criterion for corpus ≥ 100 MB. With only ~145 KB of training data the tokenizer has not seen enough vocabulary to compress diverse text well — words like "artificial", "intelligence", "seashells" were absent from training. This is expected and correct.
+**Note:** §3.2 sets the ≤ 1.5x ratio criterion for corpus ≥ 100 MB. With only ~145 KB of training data the tokenizer has not seen enough vocabulary to compress diverse text well — words like "artificial", "intelligence", "seashells" were absent from training. This is expected and correct.
 
 ### 4.2 Well-known sentence from training corpus
 
@@ -87,7 +87,7 @@ Already stable at 500 merges for this sentence — corpus words are well learned
 
 ## 5. Planned manual validation
 
-To meet PRD §3.2 (ratio ≤ 1.5x), train on corpus ≥ 100 MB and verify manually:
+To meet §3.2 (ratio ≤ 1.5x), train on corpus ≥ 100 MB and verify manually:
 
 ```bash
 # Download corpus

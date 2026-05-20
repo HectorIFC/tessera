@@ -7,7 +7,7 @@ import io.kotest.matchers.shouldBe
 /**
  * Validates tokenization quality against tiktoken cl100k_base reference values.
  *
- * NOTE: The PRD §3.2 criterion (Tessera/tiktoken ratio in [0.7x, 1.5x]) requires
+ * NOTE: The §3.2 criterion (Tessera/tiktoken ratio in [0.7x, 1.5x]) requires
  * training on corpus ≥ 100MB. These automated tests use a ~145KB in-memory corpus,
  * so bounds are intentionally relaxed. The full criterion is validated manually
  * with a large corpus before each release.
@@ -75,7 +75,7 @@ class ComparisonTest : StringSpec({
                 tessAvg,
             )} tok/word, tiktoken: ${"%.2f".format(tiktokenAvg)}, ratio: ${"%.2f".format(ratio)}",
         )
-        // With small corpus, ratio ≤ 3.0 is achievable; ≤ 1.5 requires ≥ 100MB corpus (PRD §3.2)
+        // With small corpus, ratio ≤ 3.0 is achievable; ≤ 1.5 requires ≥ 100MB corpus
         ratio shouldBeLessThan 3.0
     }
 
@@ -140,7 +140,7 @@ class ComparisonTest : StringSpec({
         }
     }
 
-    "granularity improves toward PRD §3.2 criterion with larger corpus" {
+    "granularity improves toward §3.2 criterion with larger corpus" {
         // Informational: shows how ratio trends toward the 1.5x target as corpus grows
         val largerCorpus = corpus.repeat(3) // ~435KB
         val bigTokenizer = Trainer(TrainingConfig(numMerges = 2000, verbose = false)).train(largerCorpus)
