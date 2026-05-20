@@ -15,7 +15,7 @@ private data class TokenizerFile(
     val version: Int,
     val name: String,
     val specialTokens: Map<String, Int>,
-    val merges: List<MergeEntry>
+    val merges: List<MergeEntry>,
 )
 
 internal object Persistence {
@@ -29,7 +29,7 @@ internal object Persistence {
             version = 1,
             name = "tessera",
             specialTokens = tokenizer.specialTokens.tokens,
-            merges = mergeList
+            merges = mergeList,
         )
         file.writeText(json.encodeToString(TokenizerFile.serializer(), data), Charsets.UTF_8)
     }

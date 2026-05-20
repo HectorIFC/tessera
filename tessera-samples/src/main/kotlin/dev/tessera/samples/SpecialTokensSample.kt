@@ -17,7 +17,7 @@ fun main() {
         "<|endoftext|>",
         "<|user|>",
         "<|assistant|>",
-        "<|system|>"
+        "<|system|>",
     )
 
     println("Special tokens:")
@@ -27,7 +27,7 @@ fun main() {
 
     val corpus = "hello world the quick brown fox ".repeat(100)
     val tokenizer = Trainer(
-        TrainingConfig(numMerges = 50, verbose = false, specialTokens = specialTokens)
+        TrainingConfig(numMerges = 50, verbose = false, specialTokens = specialTokens),
     ).train(corpus)
 
     println("\nvocabSize: ${tokenizer.vocabSize}")

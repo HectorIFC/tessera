@@ -31,10 +31,12 @@ fun main() {
             lastProgress = progress
             if (progress.mergesCompleted % 50 == 0) {
                 val (a, b) = progress.lastMergeTokens ?: ("?" to "?")
-                println("  merge ${progress.mergesCompleted}/${progress.totalMerges}" +
-                        " — last: \"$a\" + \"$b\"")
+                println(
+                    "  merge ${progress.mergesCompleted}/${progress.totalMerges}" +
+                        " — last: \"$a\" + \"$b\"",
+                )
             }
-        }
+        },
     )
 
     val tokenizer = Trainer(config).train(corpus)

@@ -9,11 +9,13 @@ internal object DecodeCommand {
         val idsStr = requireArg(params, "ids")
 
         val ids = idsStr.split(",")
-            .map { it.trim().toIntOrNull() ?: run {
-                System.err.println("Invalid ID: '${it.trim()}' — expected integers separated by commas")
-                System.exit(1)
-                error("unreachable")
-            }}
+            .map {
+                it.trim().toIntOrNull() ?: run {
+                    System.err.println("Invalid ID: '${it.trim()}' — expected integers separated by commas")
+                    System.exit(1)
+                    error("unreachable")
+                }
+            }
             .toIntArray()
 
         val tokenizer = BpeTokenizer.load(tokenizerPath)

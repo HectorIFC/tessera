@@ -16,12 +16,10 @@ public class Trainer(public val config: TrainingConfig = TrainingConfig()) {
     }
 
     /** Trains a tokenizer from the file at [path]. */
-    public fun trainFromFile(path: String): BpeTokenizer =
-        trainFromFile(java.io.File(path))
+    public fun trainFromFile(path: String): BpeTokenizer = trainFromFile(java.io.File(path))
 
     /** Trains a tokenizer from [file]. */
-    public fun trainFromFile(file: java.io.File): BpeTokenizer =
-        train(file.readText(Charsets.UTF_8))
+    public fun trainFromFile(file: java.io.File): BpeTokenizer = train(file.readText(Charsets.UTF_8))
 
     // Converts pre-tokenized chunks into a flat ID list with -1 sentinels between chunks.
     private fun chunksToIds(chunks: List<String>): MutableList<Int> {
@@ -44,7 +42,7 @@ public class Trainer(public val config: TrainingConfig = TrainingConfig()) {
 
             // Deterministic tie-break: lowest pair (a, b) lexicographically
             val best = stats.maxByOrNull { (pair, freq) ->
-                freq.toLong() * 1_000_000_000L - pair.first.toLong() * 1_000_000L - pair.second.toLong()
+                freq.toLong() * FREQ_MULTIPLIER - pair.first.toLong() * FIRST_ID_MULTIPLIER - pair.second.toLong()
             }!!.key
 
             val newId = firstMergeId + step
@@ -52,7 +50,7 @@ public class Trainer(public val config: TrainingConfig = TrainingConfig()) {
             merges[best] = newId
             vocab[newId] = vocab[best.first]!! + vocab[best.second]!!
 
-            if (config.verbose && (step + 1) % 100 == 0) {
+            if (config.verbose && (step + 1) % VERBOSE_INTERVAL == 0) {
                 println("merge ${step + 1}/${config.numMerges}: $best -> $newId")
             }
             config.progressCallback?.invoke(
@@ -60,8 +58,8 @@ public class Trainer(public val config: TrainingConfig = TrainingConfig()) {
                     mergesCompleted = step + 1,
                     totalMerges = config.numMerges,
                     lastMergeTokens = ByteUtils.bytesToString(vocab[best.first]!!) to
-                            ByteUtils.bytesToString(vocab[best.second]!!)
-                )
+                        ByteUtils.bytesToString(vocab[best.second]!!),
+                ),
             )
         }
 
@@ -97,5 +95,12 @@ public class Trainer(public val config: TrainingConfig = TrainingConfig()) {
         val vocab = mutableMapOf<Int, ByteArray>()
         for (i in 0..255) vocab[i] = byteArrayOf(ByteUtils.idToByte(i))
         return vocab
+    }
+
+    private companion object {
+        // Multipliers spread frequency and pair IDs into non-overlapping ranges for deterministic sort.
+        const val FREQ_MULTIPLIER = 1_000_000_000L
+        const val FIRST_ID_MULTIPLIER = 1_000_000L
+        const val VERBOSE_INTERVAL = 100
     }
 }

@@ -1,6 +1,5 @@
 package dev.tessera.samples
 
-import dev.tessera.BpeTokenizer
 import dev.tessera.Trainer
 import dev.tessera.TrainingConfig
 

@@ -12,12 +12,12 @@ public data class TrainingConfig(
     val numMerges: Int = 5000,
     val specialTokens: SpecialTokens = SpecialTokens.default(),
     val verbose: Boolean = true,
-    val progressCallback: ((TrainingProgress) -> Unit)? = null
+    val progressCallback: ((TrainingProgress) -> Unit)? = null,
 )
 
 /** Progress snapshot emitted after each merge during training. */
 public data class TrainingProgress(
     val mergesCompleted: Int,
     val totalMerges: Int,
-    val lastMergeTokens: Pair<String, String>?
+    val lastMergeTokens: Pair<String, String>?,
 )

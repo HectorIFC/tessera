@@ -2,28 +2,28 @@
 
 > A byte-level BPE tokenizer **library** in pure Kotlin.
 >
-> *Tessera*, do latim, é uma peça de mosaico. Cada token é uma tessera; juntos, formam o mosaico da linguagem.
+> *Tessera* — from Latin, a piece of mosaic. Each token is a tessera; together they form the mosaic of language.
 
 ## Status
 
-🚧 **Em desenvolvimento** — Fase 0 (Setup multi-módulo)
+🚧 **In development** — Phase 5 (Publication & polish)
 
-Veja [PRD.md](./PRD.md) para a especificação completa.
+See [PRD.md](./PRD.md) for the full specification.
 
-## Sobre
+## About
 
-Tessera é uma **biblioteca Kotlin** que implementa um tokenizador **Byte-Pair Encoding** (BPE) byte-level, no estilo do `cl100k_base` usado pelo GPT-4. Foi construída from-scratch em **Kotlin puro**, sem dependências de bibliotecas de ML, com o objetivo de aprender em profundidade como tokenizadores modernos funcionam e fornecer uma lib enxuta e legível pra projetos Kotlin/JVM.
+Tessera is a **Kotlin library** that implements a byte-level **Byte-Pair Encoding** (BPE) tokenizer in the style of GPT-4's `cl100k_base`. Built from scratch in **pure Kotlin**, with no ML framework dependencies, it is designed for developers who want to understand how modern tokenizers work and for Kotlin/JVM projects that need a lean, readable tokenization library.
 
-### Princípios
+### Principles
 
-- **Biblioteca, não aplicação** — destinada a ser consumida por outros projetos Kotlin
-- **Kotlin puro** — sem DJL, sem KInference, sem frameworks de ML
-- **Standard library only** para a lógica de tokenização
-- **Byte-level** — vocab base de 256 bytes, suporta qualquer texto UTF-8
-- **Compatível com a abordagem do GPT-4** — pré-tokenização com regex `cl100k_base`
-- **API pública minimalista** — só o necessário, marcado explicitamente
+- **Library, not application** — designed to be consumed by other Kotlin projects
+- **Pure Kotlin** — no DJL, no KInference, no ML frameworks
+- **Standard library only** for tokenization logic
+- **Byte-level** — base vocabulary of 256 bytes, supports any UTF-8 input
+- **GPT-4 compatible approach** — pre-tokenization with `cl100k_base` regex
+- **Minimal public API** — only what is necessary, explicitly marked
 
-## Instalação (após release v1.0.0)
+## Installation (after v1.0.0 release)
 
 ### Gradle (Kotlin DSL)
 
@@ -37,11 +37,11 @@ dependencyResolutionManagement {
 
 // build.gradle.kts
 dependencies {
-    implementation("com.github.SEU_USUARIO:tessera:tessera-core-v1.0.0")
+    implementation("com.github.HectorIFC:tessera:tessera-core-v1.0.0")
 }
 ```
 
-## Uso básico
+## Quick start
 
 ```kotlin
 import dev.tessera.BpeTokenizer
@@ -49,82 +49,85 @@ import dev.tessera.Trainer
 import dev.tessera.TrainingConfig
 
 fun main() {
-    // 1. Treinar um tokenizer a partir de um corpus
+    // 1. Train a tokenizer from a corpus
     val tokenizer = Trainer(TrainingConfig(numMerges = 5000))
         .trainFromFile("corpus/text.txt")
 
-    // 2. Salvar pra reusar depois
+    // 2. Save for later reuse
     tokenizer.save("tessera.json")
 
-    // 3. Carregar e usar
+    // 3. Load and use
     val loaded = BpeTokenizer.load("tessera.json")
-    val ids = loaded.encode("Olá, mundo!")
+    val ids = loaded.encode("Hello, world!")
     val text = loaded.decode(ids)
     println("$ids → $text")
 }
 ```
 
-Mais exemplos no módulo [`tessera-samples`](./tessera-samples/).
+More examples in the [`tessera-samples`](./tessera-samples/) module.
 
-## Estrutura do projeto
+## Project structure
 
-Este é um projeto **Gradle multi-módulo**:
+This is a **Gradle multi-module** project:
 
 ```
 tessera/
-├── tessera-core/      ← A biblioteca (artefato publicado)
-├── tessera-cli/       ← Aplicação CLI consumindo a lib
-└── tessera-samples/   ← Exemplos de uso da lib
+├── tessera-core/      ← The library (published artifact)
+├── tessera-cli/       ← CLI application consuming the library
+└── tessera-samples/   ← Usage examples
 ```
 
-- **`tessera-core`**: o JAR consumível. API pública minimalista, sem dependências runtime além do Kotlin stdlib e kotlinx-serialization.
-- **`tessera-cli`**: aplicação rodável (`./gradlew :tessera-cli:run`) que demonstra a lib em uso.
-- **`tessera-samples`**: pequenos programas Kotlin com `main()` mostrando padrões de uso.
+- **`tessera-core`**: the consumable JAR. Minimal public API, no runtime dependencies beyond Kotlin stdlib and kotlinx-serialization.
+- **`tessera-cli`**: runnable application (`./gradlew :tessera-cli:run`) demonstrating the library in use.
+- **`tessera-samples`**: small Kotlin programs with `main()` showing usage patterns.
 
-## Como rodar localmente
+## Running locally
 
 ```bash
-# Buildar tudo
+# Build everything
 ./gradlew build
 
-# Rodar os testes
+# Run tests
 ./gradlew test
 
-# Instalar a lib no Maven Local pra testar em outros projetos
+# Run the full quality pipeline
+./gradlew test koverVerify ktlintCheck detekt
+
+# Install the library in Maven Local for testing in other projects
 ./gradlew publishToMavenLocal
 
-# Rodar o CLI
+# Run the CLI
 ./gradlew :tessera-cli:run --args="train --corpus corpus/text.txt --merges 5000 --output tessera.json"
 
-# Rodar um sample
+# Run a sample
 ./gradlew :tessera-samples:run -PmainClass=dev.tessera.samples.QuickStartSampleKt
 ```
 
-## Arquitetura
+## Architecture
 
-Em alto nível:
+At a high level:
 
-1. **Pré-tokenização**: o texto passa por um regex (estilo GPT-4) que o divide em chunks lógicos (palavras, contrações, números, espaços, pontuação).
-2. **Conversão pra bytes**: cada chunk vira uma sequência de bytes UTF-8 (0-255).
-3. **BPE**: o algoritmo aprendido funde iterativamente os pares de tokens mais frequentes, criando tokens compostos.
-4. **Encode greedy**: na hora de tokenizar texto novo, sempre aplica o merge com menor rank (aprendido primeiro), reproduzindo o comportamento do GPT.
+1. **Pre-tokenization**: text is split into logical chunks (words, contractions, numbers, punctuation) by a GPT-4-style regex.
+2. **Byte conversion**: each chunk becomes a sequence of UTF-8 bytes (0–255).
+3. **BPE**: the learned algorithm iteratively merges the most frequent byte pairs, building composite tokens.
+4. **Greedy encode**: at inference time, always apply the merge with the lowest rank (learned first), reproducing GPT behaviour.
 
-Veja [ARCHITECTURE.md](./ARCHITECTURE.md) (criado na Fase 5) para detalhes técnicos.
+See [ARCHITECTURE.md](./ARCHITECTURE.md) (created in Phase 5) for technical details.
 
 ## Roadmap
 
-- [x] Definir escopo e arquitetura (ver PRD.md)
-- [ ] **Fase 0**: Setup Gradle multi-módulo
-- [ ] **Fase 1**: Core lib com round-trip e API pública estável
-- [ ] **Fase 2**: Sample apps consumindo a lib
-- [ ] **Fase 3**: CLI consumindo a lib
-- [ ] **Fase 4**: Validação contra `tiktoken`
-- [ ] **Fase 5**: Publicação no JitPack e polish
+- [x] Define scope and architecture (see PRD.md)
+- [x] **Phase 0**: Gradle multi-module setup
+- [x] **Phase 1**: Core library with round-trip guarantee and stable public API
+- [x] **Phase 2**: Sample apps consuming the library
+- [x] **Phase 3**: CLI consuming the library
+- [x] **Phase 4**: Validation against tiktoken, fuzz tests, coverage ≥ 80%
+- [ ] **Phase 5**: JitPack publication and polish
 
-## Projeto irmão
+## Sister project
 
-Quando Tessera estiver pronta, o próximo passo é uma **codebase separada** para embeddings, que vai consumir `tessera-core` como dependência Gradle.
+Once Tessera is complete, the next step is a **separate codebase** for embeddings that will consume `tessera-core` as a Gradle dependency.
 
-## Licença
+## License
 
-MIT (a definir).
+MIT — see [LICENSE](./LICENSE).

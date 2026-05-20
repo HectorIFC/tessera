@@ -62,7 +62,7 @@ class ApiContractTest : StringSpec({
         val config = TrainingConfig(
             numMerges = 10,
             verbose = false,
-            progressCallback = { callCount++ }
+            progressCallback = { callCount++ },
         )
         Trainer(config).train("hello world ".repeat(50))
         callCount shouldBe 10

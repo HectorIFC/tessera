@@ -78,7 +78,7 @@ class RoundTripTest : StringSpec({
             "numbers: 123 456 789", "mixed: abc123def",
             "punctuation: !@#\$%^&*()", "newline\ntest",
             "tab\there", "quote: \"hello\"", "apostrophe: it's",
-            "long: " + "a".repeat(100)
+            "long: " + "a".repeat(100),
         )
         for (text in samples) {
             tokenizer.decode(tokenizer.encode(text)) shouldBe text

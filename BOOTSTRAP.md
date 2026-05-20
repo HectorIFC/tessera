@@ -1,28 +1,28 @@
-# Guia de Bootstrap — Tessera
+# Bootstrap Guide — Tessera
 
-Este guia descreve os passos que **você precisa executar na sua máquina** para colocar o projeto Tessera no ar e começar a desenvolver com o Claude Code.
+This guide describes the steps you need to run on your machine to get the Tessera project up and running and start developing with Claude Code.
 
 ---
 
-## Passo 1 — Criar o repositório no GitHub
+## Step 1 — Create the GitHub repository
 
-Você tem duas opções:
+You have two options:
 
-### Opção A — Via web (mais simples)
+### Option A — Via web (simpler)
 
-1. Acesse https://github.com/new
-2. Preencha:
+1. Go to https://github.com/new
+2. Fill in:
    - **Repository name:** `tessera`
    - **Description:** `A byte-level BPE tokenizer in pure Kotlin.`
-   - **Visibility:** Public (recomendado) ou Private (sua escolha)
-   - **NÃO** marque "Add a README" (vamos colocar o nosso)
-   - **NÃO** adicione `.gitignore` nem licença ainda
-3. Clique em **Create repository**
-4. Copie a URL do repositório (algo como `https://github.com/SEU_USUARIO/tessera.git`)
+   - **Visibility:** Public (recommended) or Private (your choice)
+   - **Do NOT** check "Add a README" (we will add our own)
+   - **Do NOT** add a `.gitignore` or a license yet
+3. Click **Create repository**
+4. Copy the repository URL (something like `https://github.com/YOUR_USERNAME/tessera.git`)
 
-### Opção B — Via GitHub CLI
+### Option B — Via GitHub CLI
 
-Se você tem o `gh` CLI instalado e autenticado:
+If you have the `gh` CLI installed and authenticated:
 
 ```bash
 gh repo create tessera \
@@ -31,35 +31,35 @@ gh repo create tessera \
   --clone
 ```
 
-(Substitua `--public` por `--private` se preferir.)
+(Replace `--public` with `--private` if preferred.)
 
-Isso já cria e clona em uma única operação. Pule pro Passo 3.
+This creates and clones in a single operation. Skip to Step 3.
 
 ---
 
-## Passo 2 — Clonar localmente
+## Step 2 — Clone locally
 
-Escolha onde quer guardar o projeto (ex: `~/projects/`):
+Choose where you want to store the project (e.g. `~/projects/`):
 
 ```bash
 cd ~/projects
-git clone https://github.com/SEU_USUARIO/tessera.git
+git clone https://github.com/YOUR_USERNAME/tessera.git
 cd tessera
 ```
 
 ---
 
-## Passo 3 — Adicionar os arquivos iniciais
+## Step 3 — Add the initial files
 
-Copie os dois arquivos que o Claude (chat) te entregou pra dentro do repositório:
+Copy the two files delivered by Claude (chat) into the repository:
 
 ```bash
-# Dentro do diretório tessera/
-cp /caminho/onde/voce/salvou/PRD.md ./PRD.md
-cp /caminho/onde/voce/salvou/README.md ./README.md
+# Inside the tessera/ directory
+cp /path/where/you/saved/PRD.md ./PRD.md
+cp /path/where/you/saved/README.md ./README.md
 ```
 
-Faça o primeiro commit:
+Make the first commit:
 
 ```bash
 git add PRD.md README.md
@@ -69,13 +69,13 @@ git push origin main
 
 ---
 
-## Passo 4 — Abrir o Claude Code no projeto
+## Step 4 — Open Claude Code in the project
 
-Pré-requisitos:
-- Node.js 18+ instalado
-- Claude Code instalado (se não tem: `npm install -g @anthropic-ai/claude-code`)
+Prerequisites:
+- Node.js 18+ installed
+- Claude Code installed (if not: `npm install -g @anthropic-ai/claude-code`)
 
-Dentro do diretório do projeto:
+Inside the project directory:
 
 ```bash
 cd ~/projects/tessera
@@ -84,37 +84,37 @@ claude
 
 ---
 
-## Passo 5 — Primeira mensagem ao Claude Code
+## Step 5 — First message to Claude Code
 
-Cole isso como sua primeira mensagem no Claude Code:
+Paste this as your first message in Claude Code:
 
-> Olá! Este é o projeto **Tessera**, um tokenizador BPE byte-level em Kotlin puro.
+> Hello! This is the **Tessera** project, a byte-level BPE tokenizer in pure Kotlin.
 >
-> Antes de qualquer ação:
+> Before any action:
 >
-> 1. Leia o arquivo `PRD.md` por completo. Ele contém o escopo, decisões arquiteturais já tomadas, plano de fases, critérios de aceitação e armadilhas conhecidas.
-> 2. Leia também o `README.md` para contexto adicional.
-> 3. Quando terminar, me apresente um **resumo do seu entendimento** do projeto, destacando: o que vamos construir, as decisões arquiteturais que você NÃO deve re-debater, e qual é a Fase 0 que vamos iniciar.
-> 4. Aguarde minha confirmação antes de começar a implementar.
+> 1. Read the `PRD.md` file in full. It contains the scope, architectural decisions already made, phase plan, acceptance criteria, and known pitfalls.
+> 2. Also read `README.md` for additional context.
+> 3. When done, present a **summary of your understanding** of the project, highlighting: what we are building, the architectural decisions you must NOT re-debate, and which Phase 0 we will start.
+> 4. Wait for my confirmation before starting to implement.
 >
-> Importante: siga estritamente as convenções definidas no PRD (commits em inglês com prefixo `feat:`, `fix:`, etc; uma fase por vez; status report ao final de cada fase).
+> Important: strictly follow the conventions defined in the PRD (commits in English with prefix `feat:`, `fix:`, etc.; one phase at a time; status report at the end of each phase).
 
-O Claude Code vai ler os dois documentos, te apresentar o entendimento e perguntar antes de seguir. A partir daí o desenvolvimento flui.
+Claude Code will read both documents, present its understanding, and ask before proceeding. From there, development flows.
 
 ---
 
-## Passo 6 — Durante o desenvolvimento
+## Step 6 — During development
 
-Lembrete dos pontos-chave:
+Key reminders:
 
-- **Trabalhe uma fase por vez.** Não deixe o Claude Code pular fases.
-- **Revise os commits.** Periodicamente faça `git log --oneline` pra acompanhar o progresso.
-- **Rode os testes.** Após cada fase, rode `./gradlew test` pra confirmar que tudo passa.
-- **Tire dúvidas.** Se algo não fizer sentido ou parecer fugir do escopo, pergunte.
+- **Work one phase at a time.** Do not let Claude Code skip phases.
+- **Review commits.** Periodically run `git log --oneline` to track progress.
+- **Run tests.** After each phase, run `./gradlew test` to confirm everything passes.
+- **Ask questions.** If something does not make sense or seems out of scope, ask.
 
 ---
 
-## Estrutura final esperada do repositório (após Fase 0)
+## Expected repository structure (after Phase 0)
 
 ```
 tessera/
@@ -131,24 +131,24 @@ tessera/
 │   └── .gitkeep
 └── src/
     ├── main/kotlin/dev/tessera/
-    │   └── (arquivos vazios ou esqueletos)
+    │   └── (empty files or skeletons)
     └── test/kotlin/dev/tessera/
         └── HelloWorldTest.kt
 ```
 
 ---
 
-## Checklist pessoal antes de começar
+## Personal checklist before starting
 
-- [ ] Repositório criado no GitHub
-- [ ] Repositório clonado localmente
-- [ ] `PRD.md` no root do projeto
-- [ ] `README.md` no root do projeto
-- [ ] Primeiro commit feito e pushado
-- [ ] Claude Code instalado
-- [ ] Claude Code aberto no diretório do projeto
-- [ ] Primeira mensagem enviada
+- [ ] Repository created on GitHub
+- [ ] Repository cloned locally
+- [ ] `PRD.md` in the project root
+- [ ] `README.md` in the project root
+- [ ] First commit made and pushed
+- [ ] Claude Code installed
+- [ ] Claude Code opened in the project directory
+- [ ] First message sent
 
-Quando todas as caixas estiverem marcadas, você está pronto pra começar a Fase 0.
+When all boxes are checked, you are ready to start Phase 0.
 
-Boa sorte! 🎨🧩
+Good luck! 🎨🧩

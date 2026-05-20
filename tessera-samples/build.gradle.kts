@@ -9,6 +9,6 @@ dependencies {
 application {
     mainClass.set(
         project.findProperty("mainClass") as? String
-            ?: "dev.tessera.samples.QuickStartSampleKt"
+            ?: "dev.tessera.samples.QuickStartSampleKt",
     )
 }

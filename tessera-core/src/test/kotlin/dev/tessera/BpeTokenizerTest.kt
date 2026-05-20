@@ -6,9 +6,11 @@ import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 
 class BpeTokenizerTest : StringSpec({
-    val corpus = ("hello world hello world hello " +
+    val corpus = (
+        "hello world hello world hello " +
             "the quick brown fox jumps over the lazy dog " +
-            "hello hello world world the the the ")
+            "hello hello world world the the the "
+        )
         .repeat(100)
 
     lateinit var tokenizer: BpeTokenizer

@@ -10,9 +10,9 @@ fun main(args: Array<String>) {
     val rest = args.drop(1).toTypedArray()
 
     when (command) {
-        "train"   -> TrainCommand.run(rest)
-        "encode"  -> EncodeCommand.run(rest)
-        "decode"  -> DecodeCommand.run(rest)
+        "train" -> TrainCommand.run(rest)
+        "encode" -> EncodeCommand.run(rest)
+        "decode" -> DecodeCommand.run(rest)
         "inspect" -> InspectCommand.run(rest)
         "--help", "-h", "help" -> printUsage()
         else -> {
@@ -24,7 +24,8 @@ fun main(args: Array<String>) {
 }
 
 private fun printUsage() {
-    println("""
+    println(
+        """
         Tessera CLI — byte-level BPE tokenizer
 
         Usage:
@@ -38,7 +39,8 @@ private fun printUsage() {
           tessera encode --tokenizer tessera.json --text "Hello, world!"
           tessera decode --tokenizer tessera.json --ids "256,104,101,108"
           tessera inspect --tokenizer tessera.json --limit 20
-    """.trimIndent())
+        """.trimIndent(),
+    )
 }
 
 /** Parses "--key value" pairs from an args array. */
@@ -57,9 +59,8 @@ internal fun parseArgs(args: Array<String>): Map<String, String> {
     return result
 }
 
-internal fun requireArg(args: Map<String, String>, key: String): String =
-    args[key] ?: run {
-        System.err.println("Missing required argument: --$key")
-        System.exit(1)
-        error("unreachable")
-    }
+internal fun requireArg(args: Map<String, String>, key: String): String = args[key] ?: run {
+    System.err.println("Missing required argument: --$key")
+    System.exit(1)
+    error("unreachable")
+}

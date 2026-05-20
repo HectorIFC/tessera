@@ -50,30 +50,30 @@ $RECYCLE.BIN/
 hs_err_pid*
 replay_pid*
 
-# ===== Logs e temporários =====
+# ===== Logs and temp files =====
 *.log
 *.tmp
 *.bak
 *.swp
 *.swo
 
-# ===== Específicos do projeto Tessera =====
+# ===== Tessera-specific =====
 
-# Corpus de treino — nunca commitar (são GB de dados, baixáveis externamente)
+# Training corpus — never commit (GBs of data, downloaded externally)
 /corpus/*
 !/corpus/.gitkeep
 
-# Tokenizers treinados — artefatos gerados, não fonte
+# Trained tokenizers — generated artifacts, not source
 *.tessera.json
 /tessera.json
 /tessera-*.json
 !/tessera-core/src/test/resources/**/*.json
 
-# Benchmarks e relatórios gerados localmente
+# Locally generated benchmarks and reports
 /benchmark-results/
 /coverage/
 
-# Credenciais de publicação (NUNCA commitar)
+# Publishing credentials — NEVER commit
 local.properties
 gradle.properties.local
 publish.gradle.properties

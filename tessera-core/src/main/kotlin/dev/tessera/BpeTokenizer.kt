@@ -14,7 +14,7 @@ public class BpeTokenizer internal constructor(
     internal val merges: Map<Pair<Int, Int>, Int>,
     internal val vocab: Map<Int, ByteArray>,
     /** The special tokens registered with this tokenizer. */
-    public val specialTokens: SpecialTokens
+    public val specialTokens: SpecialTokens,
 ) {
     /** Total number of tokens in the vocabulary (base bytes + merges + special tokens). */
     public val vocabSize: Int get() = vocab.size + specialTokens.tokens.size
@@ -25,10 +25,7 @@ public class BpeTokenizer internal constructor(
      * Special tokens are only recognized when their string is present in [allowedSpecialTokens].
      * By default, special token strings are treated as plain text (safety against injection).
      */
-    public fun encode(
-        text: String,
-        allowedSpecialTokens: Set<String> = emptySet()
-    ): IntArray {
+    public fun encode(text: String, allowedSpecialTokens: Set<String> = emptySet()): IntArray {
         val result = mutableListOf<Int>()
 
         // Split text around any allowed special tokens, then encode each segment
@@ -62,8 +59,7 @@ public class BpeTokenizer internal constructor(
     }
 
     /** Returns the string representation of the token with the given [id]. */
-    public fun tokenAsString(id: Int): String =
-        ByteUtils.bytesToString(tokenAsBytes(id))
+    public fun tokenAsString(id: Int): String = ByteUtils.bytesToString(tokenAsBytes(id))
 
     /** Returns the raw bytes of the token with the given [id]. */
     public fun tokenAsBytes(id: Int): ByteArray {

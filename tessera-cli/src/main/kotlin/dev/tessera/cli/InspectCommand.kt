@@ -3,10 +3,12 @@ package dev.tessera.cli
 import dev.tessera.BpeTokenizer
 
 internal object InspectCommand {
+    private const val DEFAULT_LIMIT = 30
+
     fun run(args: Array<String>) {
         val params = parseArgs(args)
         val tokenizerPath = requireArg(params, "tokenizer")
-        val limit = params["limit"]?.toIntOrNull() ?: 30
+        val limit = params["limit"]?.toIntOrNull() ?: DEFAULT_LIMIT
 
         val tokenizer = BpeTokenizer.load(tokenizerPath)
 

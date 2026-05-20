@@ -1,7 +1,6 @@
 package dev.tessera
 
 import io.kotest.core.spec.style.StringSpec
-import io.kotest.matchers.doubles.shouldBeBetween
 import io.kotest.matchers.doubles.shouldBeLessThan
 import io.kotest.matchers.shouldBe
 
@@ -71,7 +70,11 @@ class ComparisonTest : StringSpec({
         val tessAvg = tessTotal / englishSentences.size
         val tiktokenAvg = tiktokenTotal / englishSentences.size
         val ratio = tessAvg / tiktokenAvg
-        println("English — Tessera: ${"%.2f".format(tessAvg)} tok/word, tiktoken: ${"%.2f".format(tiktokenAvg)}, ratio: ${"%.2f".format(ratio)}")
+        println(
+            "English — Tessera: ${"%.2f".format(
+                tessAvg,
+            )} tok/word, tiktoken: ${"%.2f".format(tiktokenAvg)}, ratio: ${"%.2f".format(ratio)}",
+        )
         // With small corpus, ratio ≤ 3.0 is achievable; ≤ 1.5 requires ≥ 100MB corpus (PRD §3.2)
         ratio shouldBeLessThan 3.0
     }
@@ -86,7 +89,11 @@ class ComparisonTest : StringSpec({
         val tessAvg = tessTotal / portugueseSentences.size
         val tiktokenAvg = tiktokenTotal / portugueseSentences.size
         val ratio = tessAvg / tiktokenAvg
-        println("Portuguese — Tessera: ${"%.2f".format(tessAvg)} tok/word, tiktoken: ${"%.2f".format(tiktokenAvg)}, ratio: ${"%.2f".format(ratio)}")
+        println(
+            "Portuguese — Tessera: ${"%.2f".format(
+                tessAvg,
+            )} tok/word, tiktoken: ${"%.2f".format(tiktokenAvg)}, ratio: ${"%.2f".format(ratio)}",
+        )
         ratio shouldBeLessThan 3.0
     }
 
