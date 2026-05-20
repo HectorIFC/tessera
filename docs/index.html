@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Tessera — A byte-level BPE tokenizer library in pure Kotlin. GPT-4 compatible, zero ML dependencies, 95% test coverage." />
+  <title>Tessera — Byte-level BPE Tokenizer for Kotlin</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #06060f;
+      --bg2:       #0d0d1a;
+      --surface:   rgba(255,255,255,0.04);
+      --border:    rgba(255,255,255,0.08);
+      --primary:   #818cf8;
+      --primary2:  #a78bfa;
+      --accent:    #34d399;
+      --text:      #e2e8f0;
+      --muted:     #64748b;
+      --muted2:    #94a3b8;
+      --code-bg:   #0f0f1e;
+      --radius:    12px;
+      --radius-lg: 20px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE TEXTURE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ── GLOW BLOBS ── */
+    .blob {
+      position: fixed; border-radius: 50%;
+      filter: blur(120px); opacity: 0.12; pointer-events: none; z-index: 0;
+    }
+    .blob-1 { width: 600px; height: 600px; background: #6366f1; top: -200px; left: -100px; }
+    .blob-2 { width: 500px; height: 500px; background: #8b5cf6; top: 40%; right: -150px; }
+    .blob-3 { width: 400px; height: 400px; background: #34d399; bottom: 10%; left: 30%; }
+
+    /* ── LAYOUT ── */
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(6,6,15,0.8);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; color: var(--text);
+    }
+    .nav-logo-icon {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, var(--primary), var(--primary2));
+      border-radius: 8px;
+      display: grid; place-items: center;
+      font-size: 16px; font-weight: 700; color: #fff;
+    }
+    .nav-logo-text { font-weight: 700; font-size: 17px; letter-spacing: -0.3px; }
+    .nav-links { display: flex; align-items: center; gap: 8px; }
+    .nav-link {
+      color: var(--muted2); text-decoration: none; font-size: 14px;
+      padding: 6px 12px; border-radius: 8px; transition: all .2s;
+    }
+    .nav-link:hover { color: var(--text); background: var(--surface); }
+    .nav-cta {
+      background: linear-gradient(135deg, var(--primary), var(--primary2));
+      color: #fff; text-decoration: none; font-size: 14px; font-weight: 500;
+      padding: 7px 16px; border-radius: 8px; transition: opacity .2s;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .nav-cta:hover { opacity: 0.85; }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 100px 0 80px;
+      text-align: center;
+      position: relative;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(129,140,248,0.1); border: 1px solid rgba(129,140,248,0.25);
+      color: var(--primary); font-size: 13px; font-weight: 500;
+      padding: 5px 14px; border-radius: 100px; margin-bottom: 28px;
+    }
+    .hero-badge-dot {
+      width: 7px; height: 7px; background: var(--accent);
+      border-radius: 50%; animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+    .hero h1 {
+      font-size: clamp(42px, 6vw, 72px);
+      font-weight: 800; line-height: 1.08;
+      letter-spacing: -2px; margin-bottom: 24px;
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #818cf8 0%, #a78bfa 40%, #34d399 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: 19px; color: var(--muted2); max-width: 600px;
+      margin: 0 auto 40px; font-weight: 400; line-height: 1.6;
+    }
+    .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary2));
+      color: #fff; text-decoration: none; font-weight: 600; font-size: 15px;
+      padding: 12px 28px; border-radius: 10px; transition: all .2s;
+      box-shadow: 0 0 30px rgba(129,140,248,0.3);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(129,140,248,0.4); }
+    .btn-ghost {
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--text); text-decoration: none; font-weight: 500; font-size: 15px;
+      padding: 12px 28px; border-radius: 10px; transition: all .2s;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.07); transform: translateY(-2px); }
+
+    /* ── STATS BAR ── */
+    .stats-bar {
+      margin: 60px 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .stat {
+      background: var(--bg2);
+      padding: 28px 24px;
+      text-align: center;
+      transition: background .2s;
+    }
+    .stat:hover { background: rgba(129,140,248,0.06); }
+    .stat-value {
+      font-size: 36px; font-weight: 800; letter-spacing: -1.5px;
+      background: linear-gradient(135deg, var(--primary), var(--primary2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; line-height: 1;
+    }
+    .stat-label { font-size: 13px; color: var(--muted); margin-top: 6px; font-weight: 500; }
+
+    /* ── SECTIONS ── */
+    section { padding: 80px 0; }
+    .section-tag {
+      display: inline-block;
+      background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.2);
+      color: var(--accent); font-size: 12px; font-weight: 600; letter-spacing: 1px;
+      text-transform: uppercase; padding: 4px 12px; border-radius: 100px;
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: clamp(28px, 4vw, 42px); font-weight: 800;
+      letter-spacing: -1px; line-height: 1.15; margin-bottom: 16px;
+    }
+    .section-sub { font-size: 17px; color: var(--muted2); max-width: 560px; }
+
+    /* ── FEATURES ── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px; margin-top: 48px;
+    }
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      transition: all .3s;
+      position: relative; overflow: hidden;
+    }
+    .feature-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(129,140,248,0.06), transparent);
+      opacity: 0; transition: opacity .3s;
+    }
+    .feature-card:hover { border-color: rgba(129,140,248,0.3); transform: translateY(-3px); }
+    .feature-card:hover::before { opacity: 1; }
+    .feature-icon {
+      width: 44px; height: 44px;
+      background: linear-gradient(135deg, rgba(129,140,248,0.15), rgba(167,139,250,0.15));
+      border: 1px solid rgba(129,140,248,0.2);
+      border-radius: 10px; display: grid; place-items: center;
+      font-size: 20px; margin-bottom: 16px;
+    }
+    .feature-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .feature-card p { font-size: 14px; color: var(--muted2); line-height: 1.65; }
+
+    /* ── HOW IT WORKS ── */
+    .pipeline {
+      display: flex; align-items: stretch;
+      gap: 0; margin-top: 48px;
+      border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden;
+    }
+    .pipeline-step {
+      flex: 1; padding: 28px 20px; background: var(--bg2);
+      border-right: 1px solid var(--border); position: relative;
+      transition: background .2s;
+    }
+    .pipeline-step:last-child { border-right: none; }
+    .pipeline-step:hover { background: rgba(129,140,248,0.05); }
+    .pipeline-num {
+      font-size: 11px; font-weight: 700; letter-spacing: 1px;
+      color: var(--primary); text-transform: uppercase; margin-bottom: 10px;
+    }
+    .pipeline-step h4 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+    .pipeline-step p { font-size: 13px; color: var(--muted2); line-height: 1.55; }
+    .pipeline-arrow {
+      display: flex; align-items: center; justify-content: center;
+      width: 36px; flex-shrink: 0;
+      background: var(--bg2); border-right: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    /* ── CODE BLOCK ── */
+    .code-wrap {
+      margin-top: 48px;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg); overflow: hidden;
+    }
+    .code-header {
+      display: flex; align-items: center; gap: 8px;
+      padding: 14px 20px;
+      background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid var(--border);
+    }
+    .code-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .code-dot-red   { background: #ff5f57; }
+    .code-dot-amber { background: #febc2e; }
+    .code-dot-green { background: #28c840; }
+    .code-filename { font-size: 13px; color: var(--muted); font-family: 'JetBrains Mono', monospace; margin-left: 8px; }
+    pre {
+      padding: 24px; overflow-x: auto; font-size: 14px;
+      font-family: 'JetBrains Mono', 'Fira Code', monospace; line-height: 1.7;
+    }
+    .kw  { color: #c792ea; }
+    .fn  { color: #82aaff; }
+    .str { color: #c3e88d; }
+    .num { color: #f78c6c; }
+    .cm  { color: #546e7a; font-style: italic; }
+    .ty  { color: #ffcb6b; }
+    .pn  { color: #89ddff; }
+
+    /* ── QUALITY GRID ── */
+    .quality-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px; margin-top: 48px;
+    }
+    .quality-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 24px;
+      display: flex; flex-direction: column; gap: 8px;
+      transition: all .2s;
+    }
+    .quality-card:hover { border-color: rgba(52,211,153,0.3); }
+    .quality-label { font-size: 13px; color: var(--muted); font-weight: 500; }
+    .quality-value { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
+    .quality-value.green { color: var(--accent); }
+    .quality-value.indigo { color: var(--primary); }
+    .quality-desc { font-size: 13px; color: var(--muted2); }
+    .quality-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 6px;
+      align-self: flex-start; margin-top: 4px;
+    }
+    .badge-green { background: rgba(52,211,153,0.12); color: var(--accent); border: 1px solid rgba(52,211,153,0.2); }
+    .badge-blue  { background: rgba(129,140,248,0.12); color: var(--primary); border: 1px solid rgba(129,140,248,0.2); }
+
+    /* ── CONTRIBUTE ── */
+    .contribute {
+      text-align: center;
+      background: linear-gradient(135deg, rgba(129,140,248,0.08), rgba(52,211,153,0.06));
+      border: 1px solid var(--border); border-radius: 24px;
+      padding: 72px 40px; margin: 0 0 80px;
+    }
+    .contribute h2 { font-size: clamp(28px, 4vw, 40px); font-weight: 800; letter-spacing: -1px; margin-bottom: 16px; }
+    .contribute p { font-size: 17px; color: var(--muted2); max-width: 500px; margin: 0 auto 36px; }
+    .contribute-links { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    /* ── TECH STACK ── */
+    .stack { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 32px; }
+    .tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; font-weight: 500;
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--muted2); padding: 5px 12px; border-radius: 6px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 0;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px;
+      color: var(--muted); font-size: 13px;
+    }
+    footer a { color: var(--muted2); text-decoration: none; transition: color .2s; }
+    footer a:hover { color: var(--text); }
+
+    /* ── DIVIDER ── */
+    .divider { height: 1px; background: var(--border); margin: 0; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .pipeline { flex-direction: column; }
+      .pipeline-step { border-right: none; border-bottom: 1px solid var(--border); }
+      .pipeline-step:last-child { border-bottom: none; }
+      .pipeline-arrow { display: none; }
+      nav .nav-links .nav-link { display: none; }
+    }
+
+    /* ── COUNT-UP ANIMATION ── */
+    .count { display: inline-block; }
+
+    /* ── SCROLL FADE IN ── */
+    .fade-in { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; }
+    .fade-in.visible { opacity: 1; transform: none; }
+  </style>
+</head>
+<body>
+
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+
+<!-- ── NAV ── -->
+<nav>
+  <div class="container">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <div class="nav-logo-icon">T</div>
+        <span class="nav-logo-text">Tessera</span>
+      </a>
+      <div class="nav-links">
+        <a href="#features"    class="nav-link">Features</a>
+        <a href="#how-it-works" class="nav-link">How it works</a>
+        <a href="#quality"     class="nav-link">Quality</a>
+        <a href="#quickstart"  class="nav-link">Quick start</a>
+        <a href="https://github.com/HectorIFC/tessera" target="_blank" class="nav-cta">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      v1.0.0 — stable release
+    </div>
+    <h1>Tokenization,<br><span class="gradient-text">rebuilt from bytes.</span></h1>
+    <p class="hero-sub">
+      A pure-Kotlin byte-level BPE tokenizer library. GPT-4 compatible,
+      zero ML dependencies, and a minimal API designed to be consumed as a library.
+    </p>
+    <div class="hero-actions">
+      <a href="#quickstart" class="btn-primary">Get started →</a>
+      <a href="https://github.com/HectorIFC/tessera" target="_blank" class="btn-ghost">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        View on GitHub
+      </a>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-bar fade-in">
+      <div class="stat">
+        <div class="stat-value"><span class="count" data-target="48">0</span></div>
+        <div class="stat-label">automated tests</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value"><span class="count" data-target="95">0</span>%</div>
+        <div class="stat-label">line coverage</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value"><span class="count" data-target="2212">0</span></div>
+        <div class="stat-label">strings fuzz tested</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value"><span class="count" data-target="100">0</span>%</div>
+        <div class="stat-label">round-trip accuracy</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value"><span class="count" data-target="0">0</span></div>
+        <div class="stat-label">ML dependencies</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value"><span class="count" data-target="256">0</span></div>
+        <div class="stat-label">base vocabulary tokens</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── FEATURES ── -->
+<section id="features">
+  <div class="container">
+    <div class="fade-in">
+      <span class="section-tag">Features</span>
+      <h2 class="section-title">Everything you need.<br>Nothing you don't.</h2>
+      <p class="section-sub">Tessera focuses on doing one thing exceptionally well: turning text into tokens and back again.</p>
+    </div>
+    <div class="features-grid fade-in">
+
+      <div class="feature-card">
+        <div class="feature-icon">🔷</div>
+        <h3>Pure Kotlin</h3>
+        <p>Built with Kotlin stdlib only. No DJL, no KInference, no ML frameworks. Every line is readable, auditable, and dependency-free — by design.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🌐</div>
+        <h3>Full UTF-8 Coverage</h3>
+        <p>The 256-byte base vocabulary guarantees that any UTF-8 string — ASCII, CJK, Arabic, emoji, math symbols — can always be encoded and decoded perfectly.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>GPT-4 Compatible</h3>
+        <p>Uses the exact <code style="font-size:12px;color:var(--primary)">cl100k_base</code> pre-tokenization regex from GPT-4, producing tokenization that mirrors OpenAI's approach.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🔄</div>
+        <h3>Round-trip Guarantee</h3>
+        <p><code style="font-size:12px;color:var(--accent)">decode(encode(text)) == text</code> holds for any valid UTF-8 input. Verified against 2,212 random strings across 6 Unicode categories.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">💾</div>
+        <h3>Persist &amp; Reload</h3>
+        <p>Save a trained tokenizer to JSON and load it back in milliseconds. The vocabulary is fully reconstructed from the merge list — no redundant data stored.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <h3>Safe Special Tokens</h3>
+        <p>Strings like <code style="font-size:12px;color:var(--primary)">&lt;|endoftext|&gt;</code> must be explicitly unlocked per encode call. Untrusted input is never misinterpreted as a control token.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">📦</div>
+        <h3>Library-first Design</h3>
+        <p>Strict <code style="font-size:12px;color:var(--primary)">explicitApi()</code> enforcement in Gradle. Everything not in the public API is <code style="font-size:12px;color:var(--primary)">internal</code>. The surface is stable and minimal.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🛠️</div>
+        <h3>Full Toolchain</h3>
+        <p>CI on every PR with ktlint, detekt, Kover (≥ 80% coverage threshold), and automated SemVer releases via Conventional Commits.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── HOW IT WORKS ── -->
+<section id="how-it-works">
+  <div class="container">
+    <div class="fade-in">
+      <span class="section-tag">How it works</span>
+      <h2 class="section-title">The tokenization pipeline</h2>
+      <p class="section-sub">Four deterministic stages transform any UTF-8 string into a compact token sequence.</p>
+    </div>
+    <div class="pipeline fade-in">
+      <div class="pipeline-step">
+        <div class="pipeline-num">Step 01</div>
+        <h4>Pre-tokenize</h4>
+        <p>The <code style="font-size:12px;color:var(--primary)">cl100k_base</code> regex splits text into semantic chunks — words, contractions, numbers, punctuation — preventing merges across word boundaries.</p>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-num">Step 02</div>
+        <h4>Byte conversion</h4>
+        <p>Each chunk is encoded to UTF-8 bytes. Every byte (0–255) maps to a base token. This guarantees full coverage of any text without an &quot;unknown&quot; token.</p>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-num">Step 03</div>
+        <h4>BPE merge</h4>
+        <p>The greedy encode loop applies the learned merge with the lowest rank first, collapsing frequent byte pairs into composite tokens until no known pair remains.</p>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-num">Step 04</div>
+        <h4>Token IDs</h4>
+        <p>The resulting integer array is compact, deterministic, and reversible. Decoding is a simple vocabulary lookup followed by UTF-8 string construction.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── QUICK START ── -->
+<section id="quickstart">
+  <div class="container">
+    <div class="fade-in">
+      <span class="section-tag">Quick start</span>
+      <h2 class="section-title">Up and running in minutes</h2>
+      <p class="section-sub">Add the dependency, train on your corpus, encode text. That's the whole API.</p>
+    </div>
+
+    <div class="code-wrap fade-in">
+      <div class="code-header">
+        <div class="code-dot code-dot-red"></div>
+        <div class="code-dot code-dot-amber"></div>
+        <div class="code-dot code-dot-green"></div>
+        <span class="code-filename">build.gradle.kts</span>
+      </div>
+      <pre><span class="cm">// settings.gradle.kts</span>
+<span class="fn">dependencyResolutionManagement</span> <span class="pn">{</span>
+    <span class="fn">repositories</span> <span class="pn">{</span>
+        <span class="fn">maven</span> <span class="pn">{</span> url = <span class="fn">uri</span><span class="pn">(</span><span class="str">"https://jitpack.io"</span><span class="pn">)</span> <span class="pn">}</span>
+    <span class="pn">}</span>
+<span class="pn">}</span>
+
+<span class="cm">// build.gradle.kts</span>
+<span class="fn">dependencies</span> <span class="pn">{</span>
+    <span class="fn">implementation</span><span class="pn">(</span><span class="str">"com.github.HectorIFC:tessera:tessera-core-v1.0.0"</span><span class="pn">)</span>
+<span class="pn">}</span></pre>
+    </div>
+
+    <div class="code-wrap fade-in" style="margin-top:16px">
+      <div class="code-header">
+        <div class="code-dot code-dot-red"></div>
+        <div class="code-dot code-dot-amber"></div>
+        <div class="code-dot code-dot-green"></div>
+        <span class="code-filename">Main.kt</span>
+      </div>
+      <pre><span class="kw">import</span> dev.tessera.<span class="ty">BpeTokenizer</span>
+<span class="kw">import</span> dev.tessera.<span class="ty">Trainer</span>
+<span class="kw">import</span> dev.tessera.<span class="ty">TrainingConfig</span>
+
+<span class="kw">fun</span> <span class="fn">main</span><span class="pn">()</span> <span class="pn">{</span>
+    <span class="cm">// 1. Train from a corpus</span>
+    <span class="kw">val</span> tokenizer = <span class="ty">Trainer</span><span class="pn">(</span><span class="ty">TrainingConfig</span><span class="pn">(</span>numMerges = <span class="num">10_000</span><span class="pn">))</span>
+        .<span class="fn">trainFromFile</span><span class="pn">(</span><span class="str">"corpus/text.txt"</span><span class="pn">)</span>
+
+    <span class="cm">// 2. Save for later reuse</span>
+    tokenizer.<span class="fn">save</span><span class="pn">(</span><span class="str">"tessera.json"</span><span class="pn">)</span>
+
+    <span class="cm">// 3. Load and encode</span>
+    <span class="kw">val</span> loaded = <span class="ty">BpeTokenizer</span>.<span class="fn">load</span><span class="pn">(</span><span class="str">"tessera.json"</span><span class="pn">)</span>
+    <span class="kw">val</span> ids     = loaded.<span class="fn">encode</span><span class="pn">(</span><span class="str">"Hello, world!"</span><span class="pn">)</span>
+    <span class="kw">val</span> text    = loaded.<span class="fn">decode</span><span class="pn">(</span>ids<span class="pn">)</span>
+
+    <span class="fn">println</span><span class="pn">(</span><span class="str">"$ids → $text"</span><span class="pn">)</span>
+    <span class="cm">// → [72, 101, 281, 111, 44, 319, 33] → Hello, world!</span>
+<span class="pn">}</span></pre>
+    </div>
+
+    <div style="margin-top: 28px;">
+      <span class="section-tag" style="margin-bottom: 12px; display: inline-block;">Tech stack</span>
+      <div class="stack">
+        <span class="tag">Kotlin 2.1.0</span>
+        <span class="tag">JVM 21</span>
+        <span class="tag">Gradle 8.14.1</span>
+        <span class="tag">kotlinx.serialization 1.7.3</span>
+        <span class="tag">Kotest 5.9.1</span>
+        <span class="tag">ktlint 12.1.2</span>
+        <span class="tag">detekt 1.23.7</span>
+        <span class="tag">Kover 0.8.3</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── QUALITY ── -->
+<section id="quality">
+  <div class="container">
+    <div class="fade-in">
+      <span class="section-tag">Quality</span>
+      <h2 class="section-title">Numbers don't lie.</h2>
+      <p class="section-sub">Production-grade quality gates on every pull request. No exceptions.</p>
+    </div>
+    <div class="quality-grid fade-in">
+
+      <div class="quality-card">
+        <div class="quality-label">Line coverage</div>
+        <div class="quality-value green">95%</div>
+        <div class="quality-desc">Measured with Kover. Threshold enforced at 80% in CI.</div>
+        <span class="quality-badge badge-green">✓ CI enforced</span>
+      </div>
+
+      <div class="quality-card">
+        <div class="quality-label">Test suite</div>
+        <div class="quality-value indigo">48</div>
+        <div class="quality-desc">8 test classes covering round-trip, BPE correctness, persistence, and API contract.</div>
+        <span class="quality-badge badge-blue">0 failures</span>
+      </div>
+
+      <div class="quality-card">
+        <div class="quality-label">Fuzz round-trip</div>
+        <div class="quality-value green">2,212</div>
+        <div class="quality-desc">Random strings across ASCII, Latin, CJK, emoji, and mixed Unicode. All pass.</div>
+        <span class="quality-badge badge-green">100% pass rate</span>
+      </div>
+
+      <div class="quality-card">
+        <div class="quality-label">Static analysis</div>
+        <div class="quality-value indigo">0</div>
+        <div class="quality-desc">Zero detekt violations. Complexity, magic numbers, and naming enforced.</div>
+        <span class="quality-badge badge-blue">detekt clean</span>
+      </div>
+
+      <div class="quality-card">
+        <div class="quality-label">Code style</div>
+        <div class="quality-value green">0</div>
+        <div class="quality-desc">Zero ktlint violations. IntelliJ IDEA code style enforced on every commit.</div>
+        <span class="quality-badge badge-green">ktlint clean</span>
+      </div>
+
+      <div class="quality-card">
+        <div class="quality-label">Compiler warnings</div>
+        <div class="quality-value indigo">0</div>
+        <div class="quality-desc">Clean Kotlin 2.1.0 compilation. <code style="font-size:11px">explicitApi()</code> enforced on tessera-core.</div>
+        <span class="quality-badge badge-blue">clean build</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── CONTRIBUTE ── -->
+<section>
+  <div class="container">
+    <div class="contribute fade-in">
+      <span class="section-tag">Open source</span>
+      <h2>Built in the open.<br>Ready for contributors.</h2>
+      <p>Tessera is the foundation of a larger ecosystem. The next codebase — an embeddings library — will depend on <code style="font-size:14px;color:var(--primary)">tessera-core</code> as a Gradle dependency. Join early.</p>
+      <div class="contribute-links">
+        <a href="https://github.com/HectorIFC/tessera" target="_blank" class="btn-primary">
+          Star on GitHub ⭐
+        </a>
+        <a href="https://github.com/HectorIFC/tessera/issues" target="_blank" class="btn-ghost">
+          Open an issue
+        </a>
+        <a href="https://github.com/HectorIFC/tessera/pulls" target="_blank" class="btn-ghost">
+          Submit a PR
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<div class="divider"></div>
+<div class="container">
+  <footer>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div class="nav-logo-icon" style="width:24px;height:24px;font-size:12px;">T</div>
+      <span>Tessera — byte-level BPE for Kotlin</span>
+    </div>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;">
+      <a href="https://github.com/HectorIFC/tessera" target="_blank">GitHub</a>
+      <a href="https://github.com/HectorIFC/tessera/blob/main/ARCHITECTURE.md" target="_blank">Architecture</a>
+      <a href="https://github.com/HectorIFC/tessera/blob/main/BENCHMARKS.md" target="_blank">Benchmarks</a>
+      <a href="https://jitpack.io/#HectorIFC/tessera" target="_blank">JitPack</a>
+    </div>
+    <span>MIT License · v1.0.0</span>
+  </footer>
+</div>
+
+<script>
+  // ── COUNT-UP ANIMATION ──
+  function animateCount(el) {
+    const target = parseInt(el.dataset.target, 10);
+    const duration = 1400;
+    const start = performance.now();
+    const update = (now) => {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(eased * target).toLocaleString();
+      if (progress < 1) requestAnimationFrame(update);
+    };
+    requestAnimationFrame(update);
+  }
+
+  // ── INTERSECTION OBSERVER ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        entry.target.querySelectorAll('.count').forEach(animateCount);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
