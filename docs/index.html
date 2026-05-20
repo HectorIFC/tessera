@@ -347,6 +347,51 @@
       color: var(--muted2); padding: 5px 12px; border-radius: 6px;
     }
 
+    /* ── ANIMATIONS ── */
+    .animations-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+      gap: 24px; margin-top: 48px;
+    }
+    .animation-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: border-color .3s, transform .3s;
+    }
+    .animation-card:hover { border-color: rgba(129,140,248,0.35); transform: translateY(-3px); }
+    .animation-label {
+      display: flex; align-items: center; gap: 12px;
+      padding: 16px 20px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .animation-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; font-weight: 600;
+      padding: 3px 10px; border-radius: 6px;
+    }
+    .encode-badge { background: rgba(129,140,248,0.15); color: var(--primary); border: 1px solid rgba(129,140,248,0.25); }
+    .decode-badge { background: rgba(52,211,153,0.12);  color: var(--accent);  border: 1px solid rgba(52,211,153,0.22); }
+    .animation-title { font-size: 15px; font-weight: 600; color: var(--text); }
+    .animation-video {
+      width: 100%; display: block;
+      background: #06060f;
+    }
+    .animation-desc {
+      padding: 14px 20px;
+      font-size: 13px; color: var(--muted2); line-height: 1.6;
+    }
+    .animation-desc code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; color: var(--primary);
+      background: rgba(129,140,248,0.08);
+      padding: 1px 5px; border-radius: 4px;
+    }
+    @media (max-width: 768px) {
+      .animations-grid { grid-template-columns: 1fr; }
+    }
+
     /* ── FOOTER ── */
     footer {
       border-top: 1px solid var(--border);
@@ -554,6 +599,48 @@
         <h4>Token IDs</h4>
         <p>The resulting integer array is compact, deterministic, and reversible. Decoding is a simple vocabulary lookup followed by UTF-8 string construction.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── ANIMATIONS ── -->
+<section id="animations">
+  <div class="container">
+    <div class="fade-in">
+      <span class="section-tag">Visualized</span>
+      <h2 class="section-title">See it in action</h2>
+      <p class="section-sub">Step-by-step walkthroughs of the encode and decode pipelines.</p>
+    </div>
+    <div class="animations-grid fade-in">
+
+      <div class="animation-card">
+        <div class="animation-label">
+          <span class="animation-badge encode-badge">encode</span>
+          <span class="animation-title">Text → Token IDs</span>
+        </div>
+        <video class="animation-video" autoplay loop muted playsinline>
+          <source src="encode.mp4" type="video/mp4" />
+        </video>
+        <p class="animation-desc">
+          Pre-tokenize with cl100k_base regex → convert to bytes → greedy BPE merges by lowest rank → compact <code>IntArray</code>.
+        </p>
+      </div>
+
+      <div class="animation-card">
+        <div class="animation-label">
+          <span class="animation-badge decode-badge">decode</span>
+          <span class="animation-title">Token IDs → Text</span>
+        </div>
+        <video class="animation-video" autoplay loop muted playsinline>
+          <source src="decode.mp4" type="video/mp4" />
+        </video>
+        <p class="animation-desc">
+          Vocab lookup per ID → collect byte arrays → concatenate → <code>ByteArray.toString(UTF_8)</code>. O(n), fully reversible.
+        </p>
+      </div>
+
     </div>
   </div>
 </section>
