@@ -113,8 +113,32 @@ jobs:
       - name: Build & verify
         run: ./gradlew build koverVerify
 
+      # GitHub Packages does not allow overwriting a published version (HTTP 409).
+      # A previous run may have published the Maven artifact but failed before
+      # creating the git tag, leaving the repo in a partially-released state.
+      # Treating 409 as success lets the pipeline complete (tag + release) even
+      # when the artifact was already uploaded by an earlier interrupted run.
       - name: Publish to GitHub Packages
-        run: ./gradlew :tessera-core:publishMavenPublicationToGitHubPackagesRepository
+        run: |
+          set +e
+          ./gradlew :tessera-core:publishMavenPublicationToGitHubPackagesRepository \
+            2>&1 | tee /tmp/publish.log
+          EXIT_CODE=${PIPESTATUS[0]}
+          set -e
+
+          if [ $EXIT_CODE -ne 0 ]; then
+            if grep -q "409" /tmp/publish.log; then
+              echo "::warning::Version ${{ steps.tag.outputs.new_version }} is already present in GitHub Packages (HTTP 409)."
+              echo "This means a previous run published the artifact but failed before creating the git tag."
+              echo "Continuing to create the git tag and GitHub Release."
+            else
+              echo "::error::Publish failed with an unexpected error (not 409)."
+              cat /tmp/publish.log
+              exit 1
+            fi
+          else
+            echo "Published dev.tessera:tessera-core:${{ steps.tag.outputs.new_version }} successfully."
+          fi
         env:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
