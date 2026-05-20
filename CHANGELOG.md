@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Kover 0.8.3 coverage plugin — 95% line coverage on `tessera-core`
+- `RoundTripFuzzTest`: 2.212 random UTF-8 strings (ASCII, Latin, CJK, emoji, mixed), all passing
+- `ComparisonTest`: granularity benchmarks vs tiktoken cl100k_base, compression ratio validation
+- `BENCHMARKS.md`: documented test results, coverage, granularity numbers, manual validation checklist
+
+### Phase 3 (CLI)
 - `tessera-cli`: `train`, `encode`, `decode`, `inspect` commands with manual arg parser
 - `tessera-cli`: `installDist` support via `application` plugin
 - `tessera-cli/README.md` with usage instructions

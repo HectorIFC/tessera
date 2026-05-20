@@ -2,6 +2,7 @@ plugins {
     kotlin("plugin.serialization")
     `maven-publish`
     `java-library`
+    id("org.jetbrains.kotlinx.kover")
 }
 
 kotlin {
@@ -13,6 +14,18 @@ dependencies {
 
     testImplementation("io.kotest:kotest-runner-junit5:5.9.1")
     testImplementation("io.kotest:kotest-assertions-core:5.9.1")
+}
+
+kover {
+    reports {
+        verify {
+            rule {
+                bound {
+                    minValue = 80
+                }
+            }
+        }
+    }
 }
 
 java {
