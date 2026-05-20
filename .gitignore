@@ -1,0 +1,86 @@
+# ===== Gradle =====
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/**/build/
+gradle-app.setting
+.gradletasknamecache
+
+# ===== IntelliJ IDEA / Android Studio =====
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# ===== VS Code =====
+.vscode/
+*.code-workspace
+
+# ===== Eclipse =====
+.classpath
+.project
+.settings/
+bin/
+
+# ===== macOS =====
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ===== Windows =====
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ===== Linux =====
+*~
+.directory
+.Trash-*
+
+# ===== Kotlin / JVM =====
+*.class
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+replay_pid*
+
+# ===== Logs e temporários =====
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# ===== Específicos do projeto Tessera =====
+
+# Corpus de treino — nunca commitar (são GB de dados, baixáveis externamente)
+/corpus/*
+!/corpus/.gitkeep
+
+# Tokenizers treinados — artefatos gerados, não fonte
+*.tessera.json
+/tessera.json
+/tessera-*.json
+!/tessera-core/src/test/resources/**/*.json
+
+# Benchmarks e relatórios gerados localmente
+/benchmark-results/
+/coverage/
+
+# Credenciais de publicação (NUNCA commitar)
+local.properties
+gradle.properties.local
+publish.gradle.properties
+secring.gpg
+*.gpg
+**/secrets.properties
+
+# Dependency caches
+.kotlin/
+kotlin-js-store/
