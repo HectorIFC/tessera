@@ -85,7 +85,7 @@ Already stable at 500 merges for this sentence — corpus words are well learned
 
 ---
 
-## 5. Planned manual validation (pre-v1.0.0)
+## 5. Planned manual validation
 
 To meet PRD §3.2 (ratio ≤ 1.5x), train on corpus ≥ 100 MB and verify manually:
 

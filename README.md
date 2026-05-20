@@ -6,7 +6,7 @@
 
 ## Status
 
-✅ **v1.0.0** — all phases complete.
+✅ **v0.0.1** — all phases complete.
 
 See [ARCHITECTURE.md](./ARCHITECTURE.md) for internals, [BENCHMARKS.md](./BENCHMARKS.md) for test results, and [PRD.md](./PRD.md) for the full specification.
 
@@ -23,7 +23,7 @@ Tessera is a **Kotlin library** that implements a byte-level **Byte-Pair Encodin
 - **GPT-4 compatible approach** — pre-tokenization with `cl100k_base` regex
 - **Minimal public API** — only what is necessary, explicitly marked
 
-## Installation (after v1.0.0 release)
+## Installation (after v0.0.1 release)
 
 ### Gradle (Kotlin DSL)
 
@@ -37,7 +37,7 @@ dependencyResolutionManagement {
 
 // build.gradle.kts
 dependencies {
-    implementation("com.github.HectorIFC:tessera:tessera-core-v1.0.0")
+    implementation("com.github.HectorIFC:tessera:tessera-core-v0.0.1")
 }
 ```
 
@@ -122,7 +122,7 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) (created in Phase 5) for technical deta
 - [x] **Phase 2**: Sample apps consuming the library
 - [x] **Phase 3**: CLI consuming the library
 - [x] **Phase 4**: Validation against tiktoken, fuzz tests, coverage ≥ 80%
-- [x] **Phase 5**: JitPack publication, ARCHITECTURE.md, full KDoc, v1.0.0
+- [x] **Phase 5**: JitPack publication, ARCHITECTURE.md, full KDoc
 
 ## Sister project
 
