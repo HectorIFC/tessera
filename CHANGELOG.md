@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- `tessera-cli`: `train`, `encode`, `decode`, `inspect` commands with manual arg parser
+- `tessera-cli`: `installDist` support via `application` plugin
+- `tessera-cli/README.md` with usage instructions
+- `tessera-core`: `BpeTokenizer.specialTokens` exposed as public property
+
+### Phase 2 (samples)
 - `tessera-samples`: `QuickStartSample` — minimal train → encode → decode → round-trip
 - `tessera-samples`: `TrainingSample` — training config options and progress callback
 - `tessera-samples`: `SpecialTokensSample` — custom special tokens, allowed vs. disallowed

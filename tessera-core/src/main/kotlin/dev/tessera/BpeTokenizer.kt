@@ -13,7 +13,8 @@ import dev.tessera.internal.PreTokenizer
 public class BpeTokenizer internal constructor(
     internal val merges: Map<Pair<Int, Int>, Int>,
     internal val vocab: Map<Int, ByteArray>,
-    internal val specialTokens: SpecialTokens
+    /** The special tokens registered with this tokenizer. */
+    public val specialTokens: SpecialTokens
 ) {
     /** Total number of tokens in the vocabulary (base bytes + merges + special tokens). */
     public val vocabSize: Int get() = vocab.size + specialTokens.tokens.size
