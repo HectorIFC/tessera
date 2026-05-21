@@ -90,10 +90,10 @@ jobs:
           sed -i -E "s/v[0-9]+\.[0-9]+\.[0-9]+/${TAG}/g" docs/index.html
 
           # Root README — JitPack installation snippet
-          sed -i -E "s/tessera-core-v[0-9]+\.[0-9]+\.[0-9]+/tessera-core-${TAG}/g" README.md
+          sed -i -E "s/tessera:v[0-9]+\.[0-9]+\.[0-9]+/tessera:${TAG}/g" README.md
 
           # tessera-core README — JitPack snippet and GitHub Packages Maven coordinate
-          sed -i -E "s/tessera-core-v[0-9]+\.[0-9]+\.[0-9]+/tessera-core-${TAG}/g" tessera-core/README.md
+          sed -i -E "s/tessera:v[0-9]+\.[0-9]+\.[0-9]+/tessera:${TAG}/g" tessera-core/README.md
           sed -i -E "s/tessera-core:[0-9]+\.[0-9]+\.[0-9]+/tessera-core:${VERSION}/g" tessera-core/README.md
 
           echo "All version references updated to ${TAG} / ${VERSION}"
