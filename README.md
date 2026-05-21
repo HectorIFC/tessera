@@ -40,7 +40,7 @@ dependencyResolutionManagement {
 
 // build.gradle.kts
 dependencies {
-    implementation("com.github.HectorIFC:tessera:v0.0.6")
+    implementation("com.github.HectorIFC:tessera:v0.0.7")
 }
 ```
 
