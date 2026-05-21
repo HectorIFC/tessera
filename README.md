@@ -11,8 +11,6 @@
 
 ## Status
 
-✅ **v0.0.1** — all phases complete.
-
 See [ARCHITECTURE.md](./ARCHITECTURE.md) for internals and [BENCHMARKS.md](./BENCHMARKS.md) for test results.
 
 ## About
@@ -42,7 +40,7 @@ dependencyResolutionManagement {
 
 // build.gradle.kts
 dependencies {
-    implementation("com.github.HectorIFC:tessera:tessera-core-v0.0.6")
+    implementation("com.github.HectorIFC:tessera:v0.0.6")
 }
 ```
 
